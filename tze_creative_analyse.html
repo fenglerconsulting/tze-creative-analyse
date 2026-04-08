@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TZE Creative-Analyse — Cross-Client Muster</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #0F172A; --bg-card: #1E293B; --bg-card-hover: #273548;
+            --text: #E2E8F0; --text-muted: #94A3B8;
+            --accent: #38BDF8; --accent-glow: rgba(56,189,248,0.15);
+            --border: #334155;
+            --green: #61BD4F; --green-glow: rgba(97,189,79,0.15);
+            --orange: #FF9F1A; --orange-glow: rgba(255,159,26,0.15);
+            --red: #EB5A46; --red-glow: rgba(235,90,70,0.15);
+            --purple: #C377E0; --gold: #F5C542;
+            --gold-glow: rgba(245,197,66,0.15);
+        }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+
+        /* ── Hero ── */
+        .hero { padding: 80px 20px 60px; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(ellipse at 50% 0%, rgba(56,189,248,0.08) 0%, transparent 60%); pointer-events: none; }
+        .hero-badge { display: inline-block; padding: 6px 16px; background: var(--accent-glow); border: 1px solid rgba(56,189,248,0.3); border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--accent); letter-spacing: 0.5px; margin-bottom: 24px; }
+        .hero h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 800; letter-spacing: -1.5px; margin-bottom: 16px; background: linear-gradient(135deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 18px; color: var(--text-muted); max-width: 720px; margin: 0 auto 40px; }
+        .hero-stats { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 36px; font-weight: 800; color: #fff; }
+        .stat-value span { color: var(--accent); }
+        .stat-value .green { color: var(--green); }
+        .stat-label { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        section { padding: 80px 0; }
+        .section-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 12px; }
+        .section-title { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 16px; }
+        .section-subtitle { font-size: 16px; color: var(--text-muted); margin-bottom: 48px; max-width: 700px; }
+        .divider { height: 1px; background: var(--border); margin: 0; }
+
+        /* ── Insight Box ── */
+        .insight-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 32px; position: relative; overflow: hidden; }
+        .insight-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+        .insight-box.gold::before { background: linear-gradient(90deg, var(--gold), var(--orange)); }
+        .insight-box.green::before { background: linear-gradient(90deg, var(--green), var(--accent)); }
+        .insight-box.red::before { background: linear-gradient(90deg, var(--red), var(--orange)); }
+        .insight-box h3 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+        .insight-box p { font-size: 15px; color: var(--text-muted); line-height: 1.8; margin-bottom: 8px; }
+        .insight-box strong { color: var(--text); }
+        .insight-box .big-num { font-size: 48px; font-weight: 800; color: var(--accent); line-height: 1; }
+
+        /* ── Creative Grid ── */
+        .creative-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 48px; }
+        .creative-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
+        .creative-card:hover { border-color: rgba(56,189,248,0.3); transform: translateY(-2px); }
+        .creative-img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #111827; }
+        .creative-info { padding: 16px 20px; }
+        .creative-rank { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 8px; font-size: 13px; font-weight: 800; margin-right: 8px; }
+        .creative-rank.gold { background: var(--gold-glow); color: var(--gold); border: 1px solid rgba(245,197,66,0.3); }
+        .creative-rank.silver { background: rgba(192,192,192,0.15); color: #C0C0C0; border: 1px solid rgba(192,192,192,0.3); }
+        .creative-rank.bronze { background: rgba(205,127,50,0.15); color: #CD7F32; border: 1px solid rgba(205,127,50,0.3); }
+        .creative-client { font-size: 14px; font-weight: 600; color: #fff; }
+        .creative-meta { display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap; }
+        .creative-meta .tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .tag.leads { background: var(--green-glow); color: var(--green); border: 1px solid rgba(97,189,79,0.2); }
+        .tag.cpl { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(56,189,248,0.2); }
+        .tag.ctr { background: var(--orange-glow); color: var(--orange); border: 1px solid rgba(255,159,26,0.2); }
+        .tag.type { background: rgba(195,119,224,0.15); color: var(--purple); border: 1px solid rgba(195,119,224,0.2); }
+        .creative-style-label { display: inline-block; margin-top: 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+
+        /* ── Pattern Cards ── */
+        .pattern-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(480px, 1fr)); gap: 24px; margin-bottom: 48px; }
+        .pattern-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; position: relative; overflow: hidden; }
+        .pattern-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 16px 16px 0 0; }
+        .pattern-card.p1::before { background: linear-gradient(90deg, var(--gold), var(--orange)); }
+        .pattern-card.p2::before { background: linear-gradient(90deg, var(--green), var(--accent)); }
+        .pattern-card.p3::before { background: linear-gradient(90deg, var(--accent), var(--purple)); }
+        .pattern-card.p4::before { background: linear-gradient(90deg, var(--purple), var(--red)); }
+        .pattern-num { font-size: 48px; font-weight: 800; opacity: 0.08; position: absolute; top: 8px; right: 20px; }
+        .pattern-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .pattern-stats { display: flex; gap: 16px; margin: 12px 0; flex-wrap: wrap; }
+        .pattern-desc { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+        .pattern-quote { margin-top: 12px; padding: 12px 16px; background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; font-size: 13px; color: var(--text-muted); font-style: italic; line-height: 1.6; }
+
+        /* ── Style Comparison ── */
+        .style-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 48px; }
+        .style-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; }
+        .style-card.winner { border-color: rgba(97,189,79,0.4); }
+        .style-card.winner::after { content: 'GEWINNER'; position: absolute; top: 12px; right: 12px; padding: 3px 10px; background: var(--green-glow); border: 1px solid rgba(97,189,79,0.3); border-radius: 6px; font-size: 10px; font-weight: 700; color: var(--green); letter-spacing: 1px; }
+        .style-card.loser { border-color: rgba(235,90,70,0.3); opacity: 0.7; }
+        .style-name { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .style-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+        .style-stats { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+        .style-clients { font-size: 12px; color: var(--text-muted); }
+
+        /* ── Client Table ── */
+        .client-table { width: 100%; border-collapse: collapse; margin-bottom: 48px; }
+        .client-table th { text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 12px 16px; border-bottom: 2px solid var(--border); }
+        .client-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 14px; vertical-align: middle; }
+        .client-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .client-name { font-weight: 600; color: #fff; }
+        .cpl-good { color: var(--green); font-weight: 600; }
+        .cpl-ok { color: var(--orange); font-weight: 600; }
+        .cpl-bad { color: var(--red); font-weight: 600; }
+        .bar-cell { position: relative; }
+        .bar { height: 6px; border-radius: 3px; background: var(--accent); }
+
+        /* ── Copy Muster ── */
+        .copy-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 16px; }
+        .copy-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+        .copy-name { font-size: 16px; font-weight: 700; color: #fff; }
+        .copy-preview { font-size: 13px; color: var(--text-muted); line-height: 1.7; padding: 14px 18px; background: rgba(255,255,255,0.02); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
+
+        /* ── Recommendations ── */
+        .rec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        .rec-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+        .rec-card.urgent { border-color: rgba(235,90,70,0.3); }
+        .rec-card.quick { border-color: rgba(97,189,79,0.3); }
+        .rec-card.scale { border-color: rgba(56,189,248,0.3); }
+        .rec-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 12px; }
+        .rec-icon.red { background: var(--red-glow); }
+        .rec-icon.green { background: var(--green-glow); }
+        .rec-icon.blue { background: var(--accent-glow); }
+        .rec-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .rec-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+        /* ── Footer ── */
+        .footer { padding: 48px 0; text-align: center; border-top: 1px solid var(--border); }
+        .footer-grid { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; margin-bottom: 24px; }
+        .footer-item { text-align: center; }
+        .footer-item .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .footer-item .value { font-size: 14px; font-weight: 600; color: #fff; margin-top: 4px; }
+        .footer-note { font-size: 13px; color: var(--text-muted); }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .hero { padding: 48px 16px 32px; }
+            .hero h1 { font-size: 28px; }
+            .hero-stats { gap: 24px; }
+            .stat-value { font-size: 28px; }
+            .container { padding: 0 16px; }
+            section { padding: 48px 0; }
+            .creative-grid { grid-template-columns: 1fr; }
+            .pattern-grid { grid-template-columns: 1fr; }
+            .style-grid { grid-template-columns: 1fr; }
+            .rec-grid { grid-template-columns: 1fr; }
+            .client-table { font-size: 12px; }
+            .client-table td, .client-table th { padding: 10px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ HERO ══════════════════════════════════════ -->
+<div class="hero">
+    <div class="container">
+        <div class="hero-badge">FENGLER CONSULTING — DATENANALYSE</div>
+        <h1>TZE Creative-Analyse</h1>
+        <p>Welche Creatives bringen die meisten Leads bei Teleskopzahnersatz? Alle aktiven TZE-Kunden analysiert, Muster identifiziert, Gewinner-Formel destilliert.</p>
+        <div class="hero-stats">
+            <div class="stat"><div class="stat-value"><span>10</span></div><div class="stat-label">Aktive Kunden</div></div>
+            <div class="stat"><div class="stat-value"><span>262</span></div><div class="stat-label">Leads (30 Tage)</div></div>
+            <div class="stat"><div class="stat-value"><span class="green">12,48 &euro;</span></div><div class="stat-label">&Oslash; CPL</div></div>
+            <div class="stat"><div class="stat-value"><span>87</span></div><div class="stat-label">Anzeigen analysiert</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════ KEY INSIGHT ══════════════════════════════════════ -->
+<section>
+    <div class="insight-box gold">
+        <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+            <div class="big-num">69%</div>
+            <div>
+                <h3>Ein einziges Copy-Muster generiert 69% aller Leads</h3>
+                <p>Storytelling mit einem konkreten Patientennamen (Petra / Sabine) l&auml;uft bei <strong>7 von 10 Kunden</strong> und bringt 180 von 262 Leads. Das gleiche Textmuster, nur der Name und die Stadt werden angepasst.</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:48px;">
+        <div class="insight-box green">
+            <h3>Bester CPL: Erkl&auml;rvideo</h3>
+            <div class="big-num">6,85 &euro;</div>
+            <p style="margin-top:8px;">Ein sachliches Erkl&auml;rvideo bei Blatt (&bdquo;Was ist Teleskopzahnersatz?&ldquo;) hat den besten CPL aller 87 Ads. Wird aktuell nur bei <strong>1 von 10</strong> Kunden eingesetzt.</p>
+        </div>
+        <div class="insight-box red">
+            <h3>Gr&ouml;&szlig;tes Problem</h3>
+            <div class="big-num" style="color:var(--red);">0 Leads</div>
+            <p style="margin-top:8px;">Felix (Die 3 Zahn&auml;rzte) hat <strong>10 Ads aktiv und 0 Leads</strong>. Keines der funktionierenden Muster wird dort eingesetzt &mdash; weder Storytelling-Copy noch Produktkarte.</p>
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════ TOP CREATIVES ══════════════════════════════════════ -->
+<section>
+    <div class="section-label">Die Gewinner</div>
+    <div class="section-title">Top 6 Creatives nach Leads</div>
+    <div class="section-subtitle">Diese 6 Anzeigen allein bringen 139 Leads (53%) bei einem &Oslash; CPL von 10,85 &euro;. Was haben sie gemeinsam?</div>
+
+    <div class="creative-grid">
+        <!-- #1 Hatzfeld -->
+        <div class="creative-card">
+            <img class="creative-img" src="tze_creatives/01_37L_11eur_image_Jan_Hatzfeld.jpg" alt="Hatzfeld Creative" onerror="this.style.display='none'">
+            <div class="creative-info">
+                <span class="creative-rank gold">1</span>
+                <span class="creative-client">Jan Hatzfeld &mdash; Bad D&uuml;rkheim</span>
+                <div class="creative-meta">
+                    <span class="tag leads">37 Leads</span>
+                    <span class="tag cpl">10,53 &euro;</span>
+                    <span class="tag ctr">CTR 4,3%</span>
+                    <span class="tag type">Bild</span>
+                </div>
+                <div class="creative-style-label">Stil: Produktkarte (hell, Bullets)</div>
+            </div>
+        </div>
+
+        <!-- #2 Allahverdian Video -->
+        <div class="creative-card">
+            <img class="creative-img" src="tze_creatives/11_5L_16eur_image_Zahnzentrum_Wan.jpg" alt="Allahverdian Creative" onerror="this.style.background='linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center';this.outerHTML='<div class=\'creative-img\' style=\'background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;font-size:48px\'>&#127909;</div>'">
+            <div class="creative-info">
+                <span class="creative-rank gold">2</span>
+                <span class="creative-client">Allahverdian &mdash; Hamburg</span>
+                <div class="creative-meta">
+                    <span class="tag leads">34 Leads</span>
+                    <span class="tag cpl">9,74 &euro;</span>
+                    <span class="tag ctr">CTR 4,9%</span>
+                    <span class="tag type">Video</span>
+                </div>
+                <div class="creative-style-label">Stil: Cinematic dunkel + Storytelling</div>
+            </div>
+        </div>
+
+        <!-- #3 Schulz -->
+        <div class="creative-card">
+            <img class="creative-img" src="tze_creatives/03_29L_9eur_image_Zahnarztpraxis_.jpg" alt="Schulz Creative" onerror="this.style.display='none'">
+            <div class="creative-info">
+                <span class="creative-rank gold">3</span>
+                <span class="creative-client">Dr. Detlef Schulz &mdash; Essen</span>
+                <div class="creative-meta">
+                    <span class="tag leads">29 Leads</span>
+                    <span class="tag cpl">8,78 &euro;</span>
+                    <span class="tag ctr">CTR 5,8%</span>
+                    <span class="tag type">Bild</span>
+                </div>
+                <div class="creative-style-label">Stil: Produktkarte (hell, Bullets)</div>
+            </div>
+        </div>
+
+        <!-- #4 Blatt Video -->
+        <div class="creative-card">
+            <img class="creative-img" src="tze_creatives/08_15L_10eur_image_Praxis_f%C3%BCr_Zahn.jpg" alt="Blatt Creative" onerror="this.style.display='none'">
+            <div class="creative-info">
+                <span class="creative-rank silver">4</span>
+                <span class="creative-client">Dr. Matthias Blatt &mdash; Limburg</span>
+                <div class="creative-meta">
+                    <span class="tag leads">24 Leads</span>
+                    <span class="tag cpl" style="background:rgba(97,189,79,0.15);color:var(--green);border-color:rgba(97,189,79,0.2);">6,85 &euro;</span>
+                    <span class="tag ctr">CTR 4,4%</span>
+                    <span class="tag type">Video</span>
+                </div>
+                <div class="creative-style-label">Bester CPL! Erkl&auml;rvideo &bdquo;Was ist TZE?&ldquo;</div>
+            </div>
+        </div>
+
+        <!-- #5 Brackmann-Krifka -->
+        <div class="creative-card">
+            <img class="creative-img" src="tze_creatives/05_18L_11eur_image_za-marktplatzd.jpg" alt="Brackmann-Krifka Creative" onerror="this.style.display='none'">
+            <div class="creative-info">
+                <span class="creative-rank silver">5</span>
+                <span class="creative-client">Brackmann-Krifka &mdash; Langenfeld</span>
+                <div class="creative-meta">
+                    <span class="tag leads">18 Leads</span>
+                    <span class="tag cpl">11,03 &euro;</span>
+                    <span class="tag ctr" style="background:rgba(97,189,79,0.15);color:var(--green);border-color:rgba(97,189,79,0.2);">CTR 10,1%</span>
+                    <span class="tag type">Bild</span>
+                </div>
+                <div class="creative-style-label">Stil: Pure Product Shot (dunkel, kein Text)</div>
+            </div>
+        </div>
+
+        <!-- #6 Sorg -->
+        <div class="creative-card">
+            <img class="creative-img" src="tze_creatives/07_16L_12eur_image_Dr_Rainer_Sorg.jpg" alt="Sorg Creative" onerror="this.style.display='none'">
+            <div class="creative-info">
+                <span class="creative-rank silver">6</span>
+                <span class="creative-client">Dr. Rainer Sorg</span>
+                <div class="creative-meta">
+                    <span class="tag leads">16 Leads</span>
+                    <span class="tag cpl">11,55 &euro;</span>
+                    <span class="tag ctr" style="background:rgba(97,189,79,0.15);color:var(--green);border-color:rgba(97,189,79,0.2);">CTR 8,7%</span>
+                    <span class="tag type">Bild</span>
+                </div>
+                <div class="creative-style-label">Stil: Pure Product Shot (dunkel, kein Text)</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════ VISUAL STYLES ══════════════════════════════════════ -->
+<section>
+    <div class="section-label">Visuelle Muster</div>
+    <div class="section-title">4 Creative-Stile &mdash; einer ist klarer Gewinner</div>
+    <div class="section-subtitle">Alle Top-Creatives zeigen dasselbe Motiv: eine U-f&ouml;rmige Zahnprothese von oben. Der Unterschied liegt im Styling.</div>
+
+    <div class="style-grid">
+        <div class="style-card winner">
+            <div class="style-name">Produktkarte</div>
+            <div class="style-desc">Heller Hintergrund &bull; &bdquo;Teleskopzahnersatz&ldquo; Headline &bull; 3 Checkmark-Bullets &bull; Produkt-Foto &bull; Logo + Standort</div>
+            <div class="style-stats">
+                <span class="tag leads">66 Leads</span>
+                <span class="tag cpl">&Oslash; 10 &euro; CPL</span>
+                <span class="tag ctr">CTR 4&ndash;6%</span>
+            </div>
+            <div class="style-clients">Hatzfeld, Schulz &bull; Leicht skalierbar: nur Logo + Stadt &auml;ndern</div>
+        </div>
+
+        <div class="style-card">
+            <div class="style-name">Pure Product Shot</div>
+            <div class="style-desc">Dunkler Hintergrund &bull; Kein Text-Overlay &bull; Nur das Produkt &bull; Scrollstopper + starke Copy</div>
+            <div class="style-stats">
+                <span class="tag leads">39 Leads</span>
+                <span class="tag cpl">&Oslash; 11&ndash;12 &euro; CPL</span>
+                <span class="tag ctr" style="background:rgba(97,189,79,0.15);color:var(--green);border-color:rgba(97,189,79,0.2);">CTR 8&ndash;11%</span>
+            </div>
+            <div class="style-clients">Brackmann-Krifka, Sorg, Blatt &bull; H&ouml;chste CTR! Braucht starke Storytelling-Copy</div>
+        </div>
+
+        <div class="style-card">
+            <div class="style-name">Cinematic Dark + Headline</div>
+            <div class="style-desc">Schwarzer Hintergrund &bull; Grosse Headline &bull; Untertitel &bull; Produkt-Foto &bull; Branding</div>
+            <div class="style-stats">
+                <span class="tag leads">46 Leads</span>
+                <span class="tag cpl">&Oslash; 10&ndash;28 &euro; CPL</span>
+                <span class="tag ctr">CTR 3&ndash;5%</span>
+            </div>
+            <div class="style-clients">Blatt, Allahverdian, Loher &bull; Funktioniert, aber CPL sehr variabel</div>
+        </div>
+
+        <div class="style-card loser">
+            <div class="style-name">Text-Only (kein Bild)</div>
+            <div class="style-desc">Nur Text auf weissem Hintergrund &bull; Kein Produktfoto</div>
+            <div class="style-stats">
+                <span class="tag" style="background:var(--red-glow);color:var(--red);border:1px solid rgba(235,90,70,0.2);">4 Leads</span>
+                <span class="tag cpl">&Oslash; 14 &euro; CPL</span>
+            </div>
+            <div class="style-clients">Sorg &bull; Kein Scrollstopper &rarr; nicht empfohlen</div>
+        </div>
+    </div>
+
+    <div class="insight-box" style="margin-top:0;">
+        <h3>Erkenntnis: Das Bild macht bei gleicher Copy 2x CPL-Unterschied</h3>
+        <p>Blatt hat 3 Ads mit <strong>exakt der gleichen Petra-Storytelling-Copy</strong>, aber verschiedenen Bildern. Ergebnis: &bdquo;Teleskop-Zahnersatz&ldquo; (dunkel, Headline) bringt 15 Leads bei 9,72 &euro; &mdash; &bdquo;Fester Zahnersatz&ldquo; (dunkel, Headline) bringt 5 Leads bei 19,01 &euro;. <strong>Gleicher Text, doppelter CPL.</strong></p>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════ COPY PATTERNS ══════════════════════════════════════ -->
+<section>
+    <div class="section-label">Copy-Muster</div>
+    <div class="section-title">3 Texte generieren 84% aller Leads</div>
+    <div class="section-subtitle">Die gleichen Copy-Vorlagen werden kunden&uuml;bergreifend eingesetzt. Der Erfolg ist reproduzierbar.</div>
+
+    <div class="copy-card">
+        <div class="copy-header">
+            <div>
+                <span class="creative-rank gold" style="vertical-align:middle;">1</span>
+                <span class="copy-name">Petra-Storytelling</span>
+            </div>
+            <div class="creative-meta">
+                <span class="tag leads">133 Leads (51%)</span>
+                <span class="tag cpl">&Oslash; 15,17 &euro;</span>
+                <span class="tag type">5 Kunden, 26 Ads</span>
+            </div>
+        </div>
+        <div class="copy-preview">
+            &bdquo;Petra suchte f&uuml;r ihre wenigen verbliebenen Z&auml;hne nach Zahnersatz ohne Klammern und ohne Gaumenplatte, der dauerhaft h&auml;lt, natürlich wirkt ... und ihr wieder unbeschwertes Kauen, klares Sprechen und offenes Lachen erm&ouml;glicht.&ldquo;<br><br>
+            <em>Dann: Backstory der Patientin &mdash; empfindliche Z&auml;hne seit Jugend, Karies, Dauergast beim Zahnarzt...</em>
+        </div>
+    </div>
+
+    <div class="copy-card">
+        <div class="copy-header">
+            <div>
+                <span class="creative-rank silver" style="vertical-align:middle;">2</span>
+                <span class="copy-name">Sabine-Storytelling</span>
+            </div>
+            <div class="creative-meta">
+                <span class="tag leads">47 Leads (18%)</span>
+                <span class="tag cpl" style="background:rgba(97,189,79,0.15);color:var(--green);border-color:rgba(97,189,79,0.2);">&Oslash; 12,17 &euro;</span>
+                <span class="tag type">2 Kunden, 10 Ads</span>
+            </div>
+        </div>
+        <div class="copy-preview">
+            &bdquo;Sabine w&uuml;nschte sich trotz weniger Restz&auml;hne Zahnersatz ohne Implantate, Klammern und Gaumenplatte, der dennoch langlebig ist, nat&uuml;rlich aussieht ... und ihr wieder uneingeschr&auml;nktes Kauen, Sprechen und Lachen erm&ouml;glicht.&ldquo;<br><br>
+            <em>Gleiche Formel wie Petra, anderer Name. Besserer CPL &mdash; wird aber nur bei 2 Kunden eingesetzt.</em>
+        </div>
+    </div>
+
+    <div class="copy-card">
+        <div class="copy-header">
+            <div>
+                <span class="creative-rank bronze" style="vertical-align:middle;">3</span>
+                <span class="copy-name">Zahnl&uuml;cken / Problem-L&ouml;sung</span>
+            </div>
+            <div class="creative-meta">
+                <span class="tag leads">40 Leads (15%)</span>
+                <span class="tag cpl">&Oslash; 13,66 &euro;</span>
+                <span class="tag type">3 Kunden, 16 Ads</span>
+            </div>
+        </div>
+        <div class="copy-preview">
+            &bdquo;Zahnl&uuml;cken, kranke Z&auml;hne oder wackelige Prothesen k&ouml;nnen beim Lachen, Kauen und Sprechen unangenehm sein. Mit gesunden, festen Z&auml;hnen f&uuml;hlt man sich hingegen in jeder Lebenslage sicher und unbeschwert.&ldquo;<br><br>
+            <em>Problem-L&ouml;sungs-Ansatz statt Storytelling. Bei Hatzfeld (37 Leads, 10,53 &euro;) der Top-Performer!</em>
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════ CLIENT RANKING ══════════════════════════════════════ -->
+<section>
+    <div class="section-label">Kunden-Ranking</div>
+    <div class="section-title">Performance pro Kunde</div>
+    <div class="section-subtitle">Sortiert nach CPL. Gr&uuml;n = unter 15 &euro;, Orange = 15&ndash;25 &euro;, Rot = &uuml;ber 25 &euro;.</div>
+
+    <table class="client-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Kunde</th>
+                <th>Ads</th>
+                <th>Leads</th>
+                <th>&Oslash; CPL</th>
+                <th>Spend</th>
+                <th style="width:20%;">Leads (relativ)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-size:18px;">&#129351;</td>
+                <td class="client-name">Dr. Matthias Blatt</td>
+                <td>10</td>
+                <td>50</td>
+                <td class="cpl-good">10,05 &euro;</td>
+                <td>502 &euro;</td>
+                <td class="bar-cell"><div class="bar" style="width:100%;background:var(--green);"></div></td>
+            </tr>
+            <tr>
+                <td style="font-size:18px;">&#129352;</td>
+                <td class="client-name">Allahverdian</td>
+                <td>8</td>
+                <td>47</td>
+                <td class="cpl-good">10,73 &euro;</td>
+                <td>504 &euro;</td>
+                <td class="bar-cell"><div class="bar" style="width:94%;background:var(--green);"></div></td>
+            </tr>
+            <tr>
+                <td style="font-size:18px;">&#129353;</td>
+                <td class="client-name">Dr. Detlef Schulz</td>
+                <td>7</td>
+                <td>35</td>
+                <td class="cpl-good">11,14 &euro;</td>
+                <td>390 &euro;</td>
+                <td class="bar-cell"><div class="bar" style="width:70%;background:var(--green);"></div></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="client-name">Jan Hatzfeld</td>
+                <td>9</td>
+                <td>39</td>
+                <td class="cpl-good">11,32 &euro;</td>
+                <td>441 &euro;</td>
+                <td class="bar-cell"><div class="bar" style="width:78%;background:var(--green);"></div></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="client-name">Brackmann-Krifka</td>
+                <td>8</td>
+                <td>23</td>
+                <td class="cpl-good">11,76 &euro;</td>
+                <td>270 &euro;</td>
+                <td class="bar-cell"><div class="bar" style="width:46%;background:var(--green);"></div></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="client-name">Dr. Rainer Sorg</td>
+                <td>8</td>
+                <td>27</td>
+                <td class="cpl-good">12,45 &euro;</td>
+                <td>336 &euro;</td>
+                <td class="bar-cell"><div class="bar" style="width:54%;background:var(--green);"></div></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="client-name">Dr. Umut K&ouml;kl&uuml;</td>
+                <td>3</td>
+                <td>1</td>
+                <td class="cpl-ok">26,53 &euro;</td>
+                <td>27 &euro;</td>
+                <td class="bar-cell"><div class="bar" style="width:2%;background:var(--orange);"></div></td>
+            </tr>
+            <tr>
+                <td>&#9888;&#65039;</td>
+                <td class="client-name">feuerstein.dental</td>
+                <td>15</td>
+                <td>9</td>
+                <td class="cpl-bad">28,42 &euro;</td>
+                <td>256 &euro;</td>
+                <td class="bar-cell"><div class="bar" style="width:18%;background:var(--red);"></div></td>
+            </tr>
+            <tr>
+                <td>&#9888;&#65039;</td>
+                <td class="client-name">Dr. Hans Loher</td>
+                <td>9</td>
+                <td>31</td>
+                <td class="cpl-bad">29,93 &euro;</td>
+                <td>928 &euro;</td>
+                <td class="bar-cell"><div class="bar" style="width:62%;background:var(--red);"></div></td>
+            </tr>
+            <tr>
+                <td>&#128308;</td>
+                <td class="client-name">Felix (Die 3 Zahn&auml;rzte)</td>
+                <td>10</td>
+                <td>0</td>
+                <td class="cpl-bad">&mdash;</td>
+                <td>469 &euro;</td>
+                <td class="bar-cell"><div class="bar" style="width:0%;"></div></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════ GEWINNER-FORMEL ══════════════════════════════════════ -->
+<section>
+    <div class="section-label">Zusammenfassung</div>
+    <div class="section-title">Die Gewinner-Formel f&uuml;r TZE</div>
+    <div class="section-subtitle">Was alle Top-Performer gemeinsam haben &mdash; und was bei den Schlecht-Performern fehlt.</div>
+
+    <div class="pattern-grid">
+        <div class="pattern-card p1">
+            <div class="pattern-num">#1</div>
+            <div class="pattern-title">Bestes Bild-Creative: Produktkarte</div>
+            <div class="pattern-stats">
+                <span class="tag leads">66 Leads</span>
+                <span class="tag cpl">&Oslash; ~10 &euro;</span>
+            </div>
+            <div class="pattern-desc">
+                Heller Hintergrund, Headline &bdquo;Teleskopzahnersatz&ldquo;, 3 Bullet Points mit Checkmarks
+                (<em>Ohne Gaumenplatte</em>, <em>Wie echte Z&auml;hne</em>, <em>Fester Sitz</em>),
+                Produktfoto, Praxis-Logo + Standort-Pin. Template ist bei Hatzfeld und Schulz identisch &mdash;
+                <strong>einfach f&uuml;r alle Kunden skalierbar.</strong>
+            </div>
+        </div>
+
+        <div class="pattern-card p2">
+            <div class="pattern-num">#2</div>
+            <div class="pattern-title">Bestes Video-Creative: Erkl&auml;rvideo</div>
+            <div class="pattern-stats">
+                <span class="tag leads">24 Leads</span>
+                <span class="tag cpl" style="background:rgba(97,189,79,0.15);color:var(--green);border-color:rgba(97,189,79,0.2);">6,85 &euro; CPL!</span>
+            </div>
+            <div class="pattern-desc">
+                Sachliches Reel: &bdquo;Was ist Teleskopzahnersatz?&ldquo; &mdash; erkl&auml;rt das Verfahren neutral und verst&auml;ndlich.
+                Kein Emotionsfilm, sondern <strong>Education-first</strong>. Bester CPL aller 87 Ads.
+                Aktuell nur bei Blatt im Einsatz &mdash; sollte f&uuml;r alle adaptiert werden.
+            </div>
+        </div>
+
+        <div class="pattern-card p3">
+            <div class="pattern-num">#3</div>
+            <div class="pattern-title">Beste Copy: Storytelling mit Namen</div>
+            <div class="pattern-stats">
+                <span class="tag leads">180 Leads (69%)</span>
+                <span class="tag cpl">&Oslash; 14 &euro;</span>
+            </div>
+            <div class="pattern-desc">
+                &bdquo;Petra/Sabine suchte f&uuml;r ihre wenigen verbliebenen Z&auml;hne nach Zahnersatz ohne Klammern...&ldquo;
+                Immer gleiche Formel: <strong>Name &rarr; Schmerzpunkt &rarr; L&ouml;sung &rarr; Backstory</strong>.
+                Die Sabine-Variante hat mit 12,17 &euro; den besseren CPL als Petra (15,17 &euro;), wird aber nur bei 2 Kunden eingesetzt.
+            </div>
+        </div>
+
+        <div class="pattern-card p4">
+            <div class="pattern-num">!</div>
+            <div class="pattern-title">Was NICHT funktioniert</div>
+            <div class="pattern-stats">
+                <span class="tag" style="background:var(--red-glow);color:var(--red);border:1px solid rgba(235,90,70,0.2);">Vermeiden</span>
+            </div>
+            <div class="pattern-desc">
+                <strong>Technische Bilder</strong> (Dental-Modell mit Goldkronen, Gips sichtbar) &rarr; CPL 28 &euro;+<br>
+                <strong>Text-only ohne Produkt</strong> &rarr; kein Scrollstopper<br>
+                <strong>Generische Problem-Copy ohne Namen</strong> (Feuerstein) &rarr; CPL 28 &euro;+<br>
+                <strong>Zu lange Headlines</strong> (&bdquo;Wieder sicher kauen, sprechen und lachen &mdash; ohne Klammern oder Gaumenplatten&ldquo;)
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════ EMPFEHLUNGEN ══════════════════════════════════════ -->
+<section>
+    <div class="section-label">N&auml;chste Schritte</div>
+    <div class="section-title">Empfehlungen</div>
+    <div class="section-subtitle">Basierend auf den Daten: Was sofort umsetzbar ist und den gr&ouml;&szlig;ten Impact hat.</div>
+
+    <div class="rec-grid">
+        <div class="rec-card urgent">
+            <div class="rec-icon red">&#128680;</div>
+            <div class="rec-title">Felix: Komplett umbauen</div>
+            <div class="rec-desc">0 Leads bei 469 &euro; Spend. Produktkarte-Template + Storytelling-Copy einf&uuml;hren &mdash; beide fehlen komplett.</div>
+        </div>
+
+        <div class="rec-card urgent">
+            <div class="rec-icon red">&#128680;</div>
+            <div class="rec-title">Feuerstein: Storytelling einf&uuml;hren</div>
+            <div class="rec-desc">Nur 9 Leads bei 15 Ads. Nutzt weder Petra/Sabine-Copy noch Produktkarte. Beides einf&uuml;hren &mdash; sofortiges Potenzial.</div>
+        </div>
+
+        <div class="rec-card urgent">
+            <div class="rec-icon red">&#128680;</div>
+            <div class="rec-title">Loher: Technische Bilder raus</div>
+            <div class="rec-desc">31 Leads, aber 29,93 &euro; CPL. Das Dental-Modell-Bild (Goldkronen sichtbar) abschreckend. Auf einfache Zahnreihe umstellen.</div>
+        </div>
+
+        <div class="rec-card quick">
+            <div class="rec-icon green">&#9889;</div>
+            <div class="rec-title">Produktkarte f&uuml;r alle ausrollen</div>
+            <div class="rec-desc">Hatzfeld/Schulz-Template (weiss, Bullets) ist am einfachsten skalierbar: nur Logo + Stadt &auml;ndern. 66 Leads, ~10 &euro; CPL.</div>
+        </div>
+
+        <div class="rec-card scale">
+            <div class="rec-icon blue">&#128200;</div>
+            <div class="rec-title">Erkl&auml;rvideo skalieren</div>
+            <div class="rec-desc">Blatts 6,85 &euro; CPL-Video f&uuml;r andere Kunden adaptieren. Bester CPL aller 87 Ads, nur bei 1 Kunden im Einsatz.</div>
+        </div>
+
+        <div class="rec-card scale">
+            <div class="rec-icon blue">&#128200;</div>
+            <div class="rec-title">Sabine-Copy breiter einsetzen</div>
+            <div class="rec-desc">Besserer CPL (12,17 &euro;) als Petra (15,17 &euro;), aber nur bei 2 Kunden. Potenzial f&uuml;r 5+ weitere Kunden.</div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════ FOOTER ══════════════════════════════════════ -->
+<div class="footer">
+    <div class="footer-grid">
+        <div class="footer-item"><div class="label">Analysezeitraum</div><div class="value">Letzte 30 Tage</div></div>
+        <div class="footer-item"><div class="label">Datenquelle</div><div class="value">Meta Ads API + Airtable</div></div>
+        <div class="footer-item"><div class="label">Analysiert am</div><div class="value">08.04.2026</div></div>
+        <div class="footer-item"><div class="label">Erstellt von</div><div class="value">Claude Code</div></div>
+    </div>
+    <div class="footer-note">Fengler Consulting &mdash; TZE Creative-Analyse</div>
+</div>
+
+</div>
+
+</body>
+</html>
